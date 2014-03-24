@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.nb.mybatis.model.INB_Entity">
+	<insert id="release" parameterType="NB_Entity">
+		insert into
+		nb_entity(nb_content,nb_image,nb_auther,nb_examiner,nb_pubtime,nb_status,nb_label)
+		values(#{nbContent},#{nbImage},#{nbAuther},#{nbExaminer},#{nbPubtime},#{nbStatus},#{nbLabel})
+	</insert>
+	<update id="verify" parameterType="Map">
+		update nb_entity set nb_status
+		= #{nbStatus} where
+		nb_id = #{nbId}
+	</update>
+	<delete id="delete" parameterType="Integer">
+		delete from nb_entity where
+		nb_id = #{nbId}
+	</delete>
+	<select id="getUpNum" parameterType="Integer">
+		select nbUp from nb_entity
+		where nb_id = #{nbId}
+	</select>
+	<update id="setUpNum" parameterType="Map">
+		update nb_entity set nbUp =
+		#{nbUp}
+		where nb_id = #{nbId}
+	</update>
+	<select id="getDownNum" parameterType="Integer">
+		select nbDown from
+		nb_entity
+		where nb_id = #{nbId}
+	</select>
+	<update id="setDownNum" parameterType="Map">
+		update nb_entity set
+		nbDown =
+		#{nbUp}
+		where nb_id = #{nbId}
+	</update>
+
+	<select id="getUserNBS" parameterType="Map" resultType="Map">
+		select
+		nb_id,nb_content,nb_image,nb_auther,nb_examiner,nb_pubtime,nb_status,nb_up,nb_down,nb_label
+		from nb_entity where
+		nb_auther= #{userId} limit #{start},#{end}
+	</select>
+
+	<select id="getNBS" parameterType="Map" resultType="Map">
+		select
+		nb_id,nb_content,nb_image,nb_auther,nb_examiner,nb_pubtime,nb_status,nb_up,nb_down,nb_label
+		from nb_entity limit #{start},#{end}
+	</select>
+
+
+</mapper>

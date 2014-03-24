@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.nb.mybatis.model.INB_Reply">
+	<select id="get_user_reply" parameterType="Integer" resultType="Map">
+		select
+		Rep_ID,Rep_NB_ID,Rep_Time,Rep_User_ID,Rep_Content from nb_reply
+		where
+		Rep_User_ID=#{user_id}
+	</select>
+
+	<select id="get_nb_reply" parameterType="Integer" resultType="Map">
+		select
+		Rep_ID,Rep_NB_ID,Rep_Time,Rep_User_ID,Rep_Content from nb_reply
+		where
+		Rep_NB_ID=#{nb_id}
+	</select>
+
+	<insert id="reply" parameterType="NB_Reply">
+		insert into
+		nb_reply(Rep_NB_ID,Rep_Time,Rep_User_ID,Rep_Content)
+		values(#{repNbId},#{repTime},#{repUserId},#{repContent})
+	</insert>
+
+	<delete id="deleteReply" parameterType="Integer">
+		delete from nb_reply
+		where Rep_ID = #{rep_id}
+	</delete>
+</mapper>
