@@ -11,6 +11,8 @@ import org.nb.db.DBDispture;
 import org.nb.mybatis.model.INB_User;
 import org.nb.mybatis.model.NB_User;
 import org.nb.resource.user.UsersResource;
+import org.nb.tool.Constant;
+import org.nb.tool.OperateLog;
 
 @Path("/login")
 public class LoginResource {
@@ -24,16 +26,20 @@ public class LoginResource {
 
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public NB_User getUserInfo(NB_User user) {
-		NB_User nb_User = null;
+	public OperateLog getUserInfo(NB_User user) {
+		OperateLog operateLog = new OperateLog();
 		try {
-			nb_User = inb_User.findUserByName(user);
+			if (inb_User.findUserByName(user) == null) {
+				operateLog.setId(Constant.ERRORCODE);
+				operateLog.setLog(Constant.LOGINERROR);
+				return operateLog;
+			}
 		} catch (Exception ex) {
 			logger.error("get user info by name error", ex);
 		} finally {
 			session.commit();
 		}
-		return nb_User;
+		return operateLog;
 	}
 
 }
