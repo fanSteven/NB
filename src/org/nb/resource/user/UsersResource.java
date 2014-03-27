@@ -8,7 +8,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
-import org.nb.Encryp.EncrypSHA;
 import org.nb.mail.Mail;
 import org.nb.mybatis.model.INB_User;
 import org.nb.mybatis.model.NB_User;
@@ -35,8 +34,7 @@ public class UsersResource extends ResHelper {
 
 				user.setStatus(UserStatus.register.getIndex());
 				user.setRegistertime(new Date());
-				user.setPassword(new String(new EncrypSHA().encrypt(user
-						.getPassword())));
+				user.setPassword(user.getPassword());
 				Mail.sendMail(new UserActivityInfo(user.getEmail(), user
 						.getPassword()));
 				int result = inb_User.register(user);

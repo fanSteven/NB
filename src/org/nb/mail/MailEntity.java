@@ -6,14 +6,14 @@ import org.nb.tool.Constant;
 
 public class MailEntity {
 	private String mailSmtpHost;
-	private String mailSmtpPort = "25";
+	private String mailSmtpPort;
 	private String fromAddress;
 	private String toAddress;
 	private String userName;
 	private String password;
 	private boolean validate = false;
 	private String subject;
-	private String content;
+	private String content = Constant.VERIFICATION_URL;
 	private String[] attachFileNames;
 	private static MailEntity mail;
 	static {
@@ -22,6 +22,12 @@ public class MailEntity {
 
 	private static void initEntity() {
 		mail = new MailEntity();
+		mail.setValidate(true);
+		mail.setMailSmtpHost(MailProperties.getProperty("mailSmtpHost"));
+		mail.setMailSmtpPort(MailProperties.getProperty("mailSmtpPort", "25"));
+		mail.setFromAddress(MailProperties.getProperty("fromAddress"));
+		mail.setUserName(MailProperties.getProperty("userName"));
+		mail.setPassword(MailProperties.getProperty("password"));
 	}
 
 	public static MailEntity getEmail() {
@@ -101,7 +107,7 @@ public class MailEntity {
 	}
 
 	public String getContent() {
-		return Constant.VERIFICATION_URL;
+		return content;
 	}
 
 	public void setContent(String content) {

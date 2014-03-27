@@ -1,5 +1,7 @@
 package org.nb.mail;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Properties;
 
@@ -10,7 +12,6 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -21,13 +22,15 @@ import org.nb.resource.user.UserActivityInfo;
 import org.nb.resource.user.UsersResource;
 
 public class Mail {
-	public static Logger logger = Logger.getLogger(UsersResource.class);
+	private static final Logger logger = Logger.getLogger(UsersResource.class);
 
 	public static boolean sendMail(UserActivityInfo activityInfo) {
 		return sendMail(activityInfo, true);
 	}
 
-	public static boolean sendMail(UserActivityInfo activityInfo, Boolean isMine) {
+	private static Message initMessage(UserActivityInfo activityInfo,
+			Boolean isMine) {
+		Message message = null;
 		NBAuthenticator authenticator = null;
 		MailEntity mailEntity = MailEntity.getEmail();
 		if (mailEntity.isValidate()) {
@@ -35,36 +38,51 @@ public class Mail {
 					mailEntity.getPassword());
 		}
 		Properties pro = mailEntity.getProperties();
+
 		Session session = Session.getDefaultInstance(pro, authenticator);
 		try {
-			Message message = new MimeMessage(session);
+			message = new MimeMessage(session);
+			Address addressFrom = new InternetAddress(
+					mailEntity.getFromAddress());
+			Address addressTo = new InternetAddress(activityInfo.getUserName());
+			message.setFrom(addressFrom);
+			message.setRecipient(Message.RecipientType.TO, addressTo);
+
+			message.setSubject(mailEntity.getSubject());
+
+			message.setSentDate(new Date());
+			String content = "";
 			try {
-				Address addressFrom = new InternetAddress(
-						mailEntity.getFromAddress());
-				Address addressTo = new InternetAddress(
-						mailEntity.getToAddress());
-				message.setFrom(addressFrom);
-				message.setRecipient(Message.RecipientType.TO, addressTo);
-				message.setSubject(mailEntity.getSubject());
-				message.setSentDate(new Date());
-				if (!isMine) {
-					message.setText(mailEntity.getContent());
-				} else {
-					BodyPart html = new MimeBodyPart();
-					html.setContent(
-							String.format(mailEntity.getContent(),
-									activityInfo.getUserName(),
-									activityInfo.getUserPassword()),
-							"text/html; charset=utf-8");
-					Multipart mainPart = new MimeMultipart();
-					mainPart.addBodyPart(html);
-					message.setContent(mainPart);
-				}
-				Transport.send(message);
-				return true;
-			} catch (AddressException e) {
-				logger.error("send active email error", e);
+				content = mailEntity.getContent()
+						+ URLEncoder.encode(String.format("u=%s&p=%s",
+								activityInfo.getUserName(),
+								activityInfo.getUserPassword()), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				logger.error("encode url error", e);
 			}
+			if (!isMine) {
+				message.setText(content);
+			} else {
+				BodyPart html = new MimeBodyPart();
+				html.setContent(content, "text/html; charset=utf-8");
+				Multipart mainPart = new MimeMultipart();
+				mainPart.addBodyPart(html);
+				message.setContent(mainPart);
+			}
+		} catch (MessagingException e) {
+			logger.error("init message error", e);
+		}
+		return message;
+	}
+
+	public static boolean sendMail(UserActivityInfo activityInfo, Boolean isMine) {
+
+		try {
+			Message message = initMessage(activityInfo, isMine);
+			if (message == null)
+				return false;
+			Transport.send(message);
+			return true;
 
 		} catch (MessagingException ex) {
 			logger.error("send active email error", ex);
