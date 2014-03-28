@@ -18,8 +18,10 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import org.apache.log4j.Logger;
+import org.nb.Encryp.EncrypSHA;
 import org.nb.resource.user.UserActivityInfo;
 import org.nb.resource.user.UsersResource;
+import org.nb.tool.Constant;
 
 public class Mail {
 	private static final Logger logger = Logger.getLogger(UsersResource.class);
@@ -54,12 +56,15 @@ public class Mail {
 			String content = "";
 			try {
 				content = mailEntity.getContent()
-						+ URLEncoder.encode(String.format("u=%s&p=%s",
+						+ URLEncoder.encode(String.format(
+								"u=%s&p=%s",
 								activityInfo.getUserName(),
-								activityInfo.getUserPassword()), "UTF-8");
+								new String(new EncrypSHA().encrypt(activityInfo
+										.getUserPassword()))), "UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				logger.error("encode url error", e);
 			}
+			content = String.format(Constant.NBSAYHELLO, content);
 			if (!isMine) {
 				message.setText(content);
 			} else {

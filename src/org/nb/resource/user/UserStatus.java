@@ -5,7 +5,8 @@ package org.nb.resource.user;
  * @author Think 1:注册 2:没注册 3:被封号
  */
 public enum UserStatus {
-	register("注册", 1), unregister("注销", 2), seal("封号", 3), delete("删除", 4);
+	noactivity("未激活", 0), activitied("已激活", 1), unregister("注销", 2), seal("封号",
+			3), delete("删除", 4);
 
 	private String status;
 	private int index;

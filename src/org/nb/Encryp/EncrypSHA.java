@@ -9,8 +9,8 @@ public class EncrypSHA implements Encrypt {
 	public byte[] encrypt(String password) {
 		byte[] resultBytes = null;
 		try {
-			//MessageDigest md = MessageDigest.getInstance("SHA");
-			MessageDigest md = MessageDigest.getInstance("MD5");
+			MessageDigest md = MessageDigest.getInstance("SHA");
+			// MessageDigest md = MessageDigest.getInstance("MD5");
 			byte[] srcBytes = password.getBytes();
 			md.update(srcBytes);
 			resultBytes = md.digest();

@@ -32,7 +32,7 @@ public class UsersResource extends ResHelper {
 			UnLegalUser unLegalUser = checkUser(user);
 			if (unLegalUser.equals(UnLegalUser.noerror)) {
 
-				user.setStatus(UserStatus.register.getIndex());
+				user.setStatus(UserStatus.noactivity.getIndex());
 				user.setRegistertime(new Date());
 				user.setPassword(user.getPassword());
 				Mail.sendMail(new UserActivityInfo(user.getEmail(), user
