@@ -10,6 +10,11 @@
 		select * from NB_User
 		where name = #{name} and password = #{password}
 	</select>
+	<select id="matchUserFromActivity" resultType="NB_User">
+		select * from
+		NB_User
+		where name = #{name} and password = #{password}
+	</select>
 	<insert id="register" parameterType="NB_User">
 		insert into
 		nb_user(email,name,password,status,registertime) values

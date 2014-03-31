@@ -9,6 +9,8 @@ public interface INB_User {
 
 	public NB_User findUserByName(NB_User user);
 
+	public NB_User matchUserFromActivity(Map<String, String> params);
+
 	public int updateUserInfo(int user_id, NB_User nb_User);
 
 	public int deleteUserStatus(Map<String, Integer> params);

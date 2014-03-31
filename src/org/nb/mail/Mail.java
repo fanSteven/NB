@@ -59,8 +59,8 @@ public class Mail {
 						+ URLEncoder.encode(String.format(
 								"u=%s&p=%s",
 								activityInfo.getUserName(),
-								new String(new EncrypSHA().encrypt(activityInfo
-										.getUserPassword()))), "UTF-8");
+								new String(activityInfo
+										.getUserPassword())), "UTF-8");
 			} catch (UnsupportedEncodingException e) {
 				logger.error("encode url error", e);
 			}

@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
+import org.nb.Encryp.EncrypSHA;
 import org.nb.mail.Mail;
 import org.nb.mybatis.model.INB_User;
 import org.nb.mybatis.model.NB_User;
@@ -17,7 +18,7 @@ import org.nb.tool.OperateLog;
 
 @Path("/users")
 public class UsersResource extends ResHelper {
-	public static Logger logger = Logger.getLogger(UsersResource.class);
+	private static final Logger logger = Logger.getLogger(UsersResource.class);
 
 	private static INB_User inb_User = null;
 	static {
@@ -34,7 +35,8 @@ public class UsersResource extends ResHelper {
 
 				user.setStatus(UserStatus.noactivity.getIndex());
 				user.setRegistertime(new Date());
-				user.setPassword(user.getPassword());
+				user.setPassword(new String(new EncrypSHA().encrypt(user
+						.getPassword())));
 				Mail.sendMail(new UserActivityInfo(user.getEmail(), user
 						.getPassword()));
 				int result = inb_User.register(user);
