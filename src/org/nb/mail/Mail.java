@@ -30,6 +30,7 @@ public class Mail {
 		return sendMail(activityInfo, true);
 	}
 
+	@SuppressWarnings("deprecation")
 	private static Message initMessage(UserActivityInfo activityInfo,
 			Boolean isMine) {
 		Message message = null;
@@ -54,16 +55,10 @@ public class Mail {
 
 			message.setSentDate(new Date());
 			String content = "";
-			try {
-				content = mailEntity.getContent()
-						+ URLEncoder.encode(String.format(
-								"u=%s&p=%s",
-								activityInfo.getUserName(),
-								new String(activityInfo
-										.getUserPassword())), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				logger.error("encode url error", e);
-			}
+			content = mailEntity.getContent()
+					+ String.format("u=%s&p=%s", URLEncoder.encode(activityInfo
+							.getUserName()), URLEncoder.encode(new String(
+							activityInfo.getUserPassword())), "UTF-8");
 			content = String.format(Constant.NBSAYHELLO, content);
 			if (!isMine) {
 				message.setText(content);
