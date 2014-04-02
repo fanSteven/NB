@@ -13,7 +13,7 @@
 	<select id="matchUserFromActivity" resultType="NB_User">
 		select * from
 		NB_User
-		where name = #{name} and password = #{password}
+		where email = #{email} and password = #{password}
 	</select>
 	<insert id="register" parameterType="NB_User">
 		insert into

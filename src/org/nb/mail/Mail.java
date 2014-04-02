@@ -18,7 +18,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import org.apache.log4j.Logger;
-import org.nb.Encryp.EncrypSHA;
 import org.nb.resource.user.UserActivityInfo;
 import org.nb.resource.user.UsersResource;
 import org.nb.tool.Constant;
@@ -30,7 +29,6 @@ public class Mail {
 		return sendMail(activityInfo, true);
 	}
 
-	@SuppressWarnings("deprecation")
 	private static Message initMessage(UserActivityInfo activityInfo,
 			Boolean isMine) {
 		Message message = null;
@@ -56,9 +54,10 @@ public class Mail {
 			message.setSentDate(new Date());
 			String content = "";
 			content = mailEntity.getContent()
-					+ String.format("u=%s&p=%s", URLEncoder.encode(activityInfo
-							.getUserName()), URLEncoder.encode(new String(
-							activityInfo.getUserPassword())), "UTF-8");
+					+ String.format("u=%s&p=%s", URLEncoder.encode(
+							activityInfo.getUserName(), "UTF-8"), URLEncoder
+							.encode(new String(activityInfo.getUserPassword()),
+									"UTF-8"), "UTF-8");
 			content = String.format(Constant.NBSAYHELLO, content);
 			if (!isMine) {
 				message.setText(content);
@@ -69,7 +68,7 @@ public class Mail {
 				mainPart.addBodyPart(html);
 				message.setContent(mainPart);
 			}
-		} catch (MessagingException e) {
+		} catch (MessagingException | UnsupportedEncodingException e) {
 			logger.error("init message error", e);
 		}
 		return message;

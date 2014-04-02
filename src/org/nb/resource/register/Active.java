@@ -32,7 +32,7 @@ public class Active extends ResHelper {
 			String userName = u;
 			String encryPass = p;
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("name", userName);
+			params.put("email", userName);
 			params.put("password", encryPass);
 			NB_User nb_User = inb_User.matchUserFromActivity(params);
 			if (nb_User == null) {
